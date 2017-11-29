@@ -16,11 +16,24 @@ namespace Snake
 
         public Snakee()
         {
+            numOfBlocks = 3;
+            for (int i = 0; i < numOfBlocks; i++)
+            {
+                Block block = new Block();
+                block.Posx = i+1;
+                block.Posy = 4;
+                blocks.Add(block);
+            }
+
         }
 
         public int Posy { get => posy; set => posy = value; }
         public int NumOfBlocks { get => numOfBlocks; set => numOfBlocks = value; }
         public int Posx { get => posx; set => posx = value; }
+        public Block GetBlock(int index)
+        {
+            return blocks[index];
+        }
 
         private void Eat()
         {
@@ -28,22 +41,33 @@ namespace Snake
         }
         public void Move(Direction direction)
         {
+            
             switch (direction)
             {
                 case Direction.UP:
-                    Posy += 10;
+                    blocks[0].Posy += 1;
                     break;
-                case Direction.DOWN:
-                    Posy -= 10;
+                      
+                    case Direction.DOWN:
+
+                    blocks[0].Posy -= 1;
                     break;
                 case Direction.LEFT:
-                    Posx -= 10;
+                    blocks[0].Posx -= 1;
                     break;
                 case Direction.RIGHT:
-                    Posx += 10;
+                    blocks[0].Posx += 1;
                     break;
                 default:
                     break;
+            }
+            int index = 1;
+            while (index < numOfBlocks)
+            {
+                
+                blocks[index].Posy = blocks[index - 1].Posy;
+                blocks[index].Posx = blocks[index - 1].Posx;
+                index++;
             }
         }
     }

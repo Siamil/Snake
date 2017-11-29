@@ -6,7 +6,5 @@
         xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" Width="500" Height="500"/>
 </Window>

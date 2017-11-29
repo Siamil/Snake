@@ -2,24 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Snake
 {
     class Game
     {
        private int points;
-        Snakee snake = new Snakee();
+        Snakee snake;
         Direction direction = Direction.UP;
+        //Timer timer = new Timer();
+        public event EventHandler SnakeMoved;
+        protected virtual void OnSnakeMoved(EventArgs e)
+        {
+            SnakeMoved?.Invoke(this, e);
+        }
 
         public Game()
         {
+            snake = new Snakee();
+            MoveSnake();
+            //timer.Interval = 300;
+            //timer.Tick += MoveSnake;
+            //timer.Start();
+            
         }
+
+       
 
         public int Points { get => points; set => points = value; }
         
+        internal Snakee Snake { get => snake; set => snake = value; }
 
-        private async Task<Direction> GetDirection()
+        public async Task<Direction> GetDirection()
         {
             
             await Task.Run(() =>
@@ -30,16 +47,20 @@ namespace Snake
             });
             return direction;
         }
-        private async Task MoveSnake()
+        public async void MoveSnake()
         {
-            
-            await Task.Run(() =>
+            while (true)
             {
+                await Task.Run(() =>
+                 {
+                     Thread.Sleep(300);
+                     Snake.Move(direction);
 
-                snake.Move(direction);
-
-            });
-            
+                 })
+                 ;
+                EventArgs e = new EventArgs();
+                OnSnakeMoved(e);
+            }
         }
     }
 }
