@@ -14,13 +14,16 @@ namespace Snake
     class BlockUI 
     {
         Block block;
+        Rectangle rect;
         public BlockUI() {
             Publisher();
         }
         public BlockUI(Block block)
         {
             this.block = block;
+             Rect = new Rectangle();
             
+
         }
         private int width;
         private int heigt;
@@ -28,16 +31,18 @@ namespace Snake
 
         public int Width { get => width; set => width = value; }
         public int Heigt { get => heigt; set => heigt = value; }
+        public Rectangle Rect { get => rect; set => rect = value; }
+
         public void Draw(Canvas canvas)
         {
-            Rectangle rect = new Rectangle();
-            rect.Width = canvas.Width/10;
-            rect.Height = canvas.Height/10;
-            rect.Fill = Brushes.Goldenrod;
-            rect.Stroke = Brushes.Black;
-            canvas.Children.Add(rect);
-            Canvas.SetLeft(rect, (double) ((block.Posx * 0.1)) * canvas.Width);
-            Canvas.SetTop(rect, (block.Posy * 0.1) * canvas.Height);
+            
+            Rect.Width = canvas.Width/10;
+            Rect.Height = canvas.Height/10;
+            Rect.Fill = Brushes.Goldenrod;
+            Rect.Stroke = Brushes.Black;
+            
+            Canvas.SetLeft(Rect, (double) ((block.Posx * 0.1)) * canvas.Width);
+            Canvas.SetTop(Rect, (block.Posy * 0.1) * canvas.Height);
         }
         public void Publisher() { }
     }
