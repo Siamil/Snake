@@ -29,6 +29,7 @@ namespace Snake
             foodUI = new FoodUI(game.Food, canvas);
             game.SnakeMoved += Draw;
             game.FoodGenerated += Draw;
+            game.GameEnded += GameEnded;
             snakeUI = new SnakeUI(canvas, game.Snake);
         }
         
@@ -40,6 +41,10 @@ namespace Snake
             snakeUI.Draw(canvas);
         }
 
+        public void GameEnded(object sender, EventArgs e)
+        {
+            MessageBox.Show("Game Over");
+        }
         private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             game.OnKeyDownHandler(e);

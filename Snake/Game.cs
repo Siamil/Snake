@@ -15,12 +15,20 @@ namespace Snake
         private int points;
         Snakee snake;
         Food food;
+        bool gameover = false;
         Direction direction = Direction.DOWN;
         //Timer timer = new Timer();
         public event EventHandler SnakeMoved;
         protected virtual void OnSnakeMoved(EventArgs e)
         {
+            
             SnakeMoved?.Invoke(this, e);
+        }
+        public event EventHandler GameEnded;
+        protected virtual void OnGameEnded(EventArgs e)
+        {
+
+            GameEnded?.Invoke(this, e);
         }
         public event EventHandler FoodGenerated;
         protected virtual void OnFoodGenerated(EventArgs e)
@@ -36,12 +44,20 @@ namespace Snake
             
 
             MoveSnake();
-
+            GameOver();
             GenerateFood();
             //timer.Interval = 300;
             //timer.Tick += MoveSnake;
             //timer.Start();
 
+        }
+        public bool GameOver()
+        {
+            for (int i = 2; i < snake.NumOfBlocks; i++)
+            {
+                if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy) return true;
+            }
+            return false;
         }
         public bool IsFoodEaten()
         {
@@ -107,25 +123,31 @@ namespace Snake
         public async void MoveSnake()
         {
             bool eat = false;
-            while (true)
+            
+            while (!gameover)
             {
+                
                 await Task.Run(() =>
                  {
                      Thread.Sleep(Config.Speed);
-                     
                      if (snake.Posx == -1) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX ;
                       if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                       if (snake.Posx == Config.NumOfPositionsX) snake.GetBlock(0).Posx = -1;
-                      if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
+                      if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1; 
                      Snake.Move(Direction);
+                     gameover = GameOver();
                      eat = IsFoodEaten();
-
                  })
                  ;
                 if (eat)
                 {
                     GenerateFood();
                     snake.Eat();
+                }
+                if (gameover)
+                {
+                    EventArgs d = new EventArgs();
+                    OnGameEnded(d);
                 }
                 EventArgs e = new EventArgs();
                 OnSnakeMoved(e);
