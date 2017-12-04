@@ -35,12 +35,12 @@ namespace Snake
 
         public void Draw(Canvas canvas)
         {  
-            Rect.Width = canvas.ActualWidth * 0.1;
-            Rect.Height = canvas.ActualHeight * 0.1;
+            Rect.Width = canvas.ActualWidth / Config.NumOfPositionsX;
+            Rect.Height = canvas.ActualHeight / Config.NumOfPositionsX;
             Rect.Fill = Brushes.Goldenrod;
             Rect.Stroke = Brushes.Black;    
-            Canvas.SetLeft(Rect, ((block.Posx * 0.1)) * canvas.ActualWidth);
-            Canvas.SetTop(Rect, (block.Posy * 0.1) * canvas.ActualHeight);
+            Canvas.SetLeft(Rect, ((block.Posx / Config.NumOfPositionsX)) * canvas.ActualWidth);
+            Canvas.SetTop(Rect, (block.Posy / Config.NumOfPositionsX) * canvas.ActualHeight);
         }
         public void Publisher() { }
     }

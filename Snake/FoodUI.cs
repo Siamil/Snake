@@ -22,11 +22,11 @@ namespace Snake
         }
         public void Draw(Canvas canvas)
         {
-            Rect.Width = canvas.ActualWidth * 0.1;
-            Rect.Height = canvas.ActualHeight * 0.1;
+            Rect.Width = canvas.ActualWidth / Config.NumOfPositionsX;
+            Rect.Height = canvas.ActualHeight / Config.NumOfPositionsY;
             Rect.Fill = Brushes.Red;
-            Canvas.SetLeft(Rect, (double)((food.Posx * 0.1)) * canvas.Width);
-            Canvas.SetTop(Rect, (food.Posy * 0.1) * canvas.Height);
+            Canvas.SetLeft(Rect, ((food.Posx / Config.NumOfPositionsX)) * canvas.Width);
+            Canvas.SetTop(Rect, (food.Posy / Config.NumOfPositionsY) * canvas.Height);
 
         }
 
