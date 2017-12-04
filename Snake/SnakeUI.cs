@@ -37,8 +37,7 @@ namespace Snake
         public void Draw(Canvas canvas)
         {
             for (int i = 0; i < blocksUI.Count; i++)
-            {
-                
+            {  
                 blocksUI[i].Draw(canvas);
             }
         }

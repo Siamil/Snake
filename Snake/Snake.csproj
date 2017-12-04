@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Block.cs" />
     <Compile Include="BlockUI.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="FoodUI.cs" />
     <Compile Include="Game.cs" />

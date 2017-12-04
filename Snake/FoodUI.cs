@@ -22,8 +22,8 @@ namespace Snake
         }
         public void Draw(Canvas canvas)
         {
-            Rect.Width = canvas.Width * 0.1;
-            Rect.Height = canvas.Width * 0.1;
+            Rect.Width = canvas.ActualWidth * 0.1;
+            Rect.Height = canvas.ActualHeight * 0.1;
             Rect.Fill = Brushes.Red;
             Canvas.SetLeft(Rect, (double)((food.Posx * 0.1)) * canvas.Width);
             Canvas.SetTop(Rect, (food.Posy * 0.1) * canvas.Height);

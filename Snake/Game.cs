@@ -10,7 +10,9 @@ namespace Snake
 {
     class Game
     {
-       private int points;
+        Random random;
+        Config config;
+        private int points;
         Snakee snake;
         Food food;
         Direction direction = Direction.DOWN;
@@ -29,17 +31,21 @@ namespace Snake
         public Game()
         {
             snake = new Snakee();
-            Food = new Food();
+            food = new Food();
+            random = new Random();
+            config = new Config();
+
             MoveSnake();
+
             GenerateFood();
             //timer.Interval = 300;
             //timer.Tick += MoveSnake;
             //timer.Start();
-            
+
         }
-         public bool IsFoodEaten()
+        public bool IsFoodEaten()
         {
-            if (Food.Posx == snake.Posx && Food.Posy == snake.Posy)
+            if (food.Posx == snake.Posx && food.Posy == snake.Posy)
             {
                 return true;
             }
@@ -47,9 +53,14 @@ namespace Snake
         }
         public void GenerateFood()
         {
-            Random random = new Random();
-            Food.Posx = random.Next(1, 10);
-            Food.Posy = random.Next(1, 10);
+
+            food.Posx = random.Next(0, config.NumOfPositionsX);
+            food.Posy = random.Next(0, config.NumOfPositionsY);
+            for (int i = 0; i < snake.NumOfBlocks; i++)
+            {
+                if (Food.Posx == snake.GetBlock(i).Posx && Food.Posy == snake.GetBlock(i).Posy) GenerateFood();
+            }
+
             EventArgs e = new EventArgs();
             OnFoodGenerated(e);
         }
@@ -57,14 +68,18 @@ namespace Snake
         {
             switch (e.Key)
             {
-                case Key.W: Direction = Direction.UP;
+                case Key.W:
+                    Direction = Direction.UP;
                     break;
 
-                case Key.S: Direction = Direction.DOWN;
+                case Key.S:
+                    Direction = Direction.DOWN;
                     break;
-                case Key.A: Direction = Direction.LEFT;
+                case Key.A:
+                    Direction = Direction.LEFT;
                     break;
-                case Key.D: Direction = Direction.RIGHT;
+                case Key.D:
+                    Direction = Direction.RIGHT;
                     break;
 
                 default:
@@ -73,7 +88,7 @@ namespace Snake
         }
 
         public int Points { get => points; set => points = value; }
-        
+
         internal Snakee Snake { get => snake; set => snake = value; }
         internal Direction Direction { get => direction; set => direction = value; }
         internal Food Food { get => food; set => food = value; }
@@ -96,13 +111,18 @@ namespace Snake
             {
                 await Task.Run(() =>
                  {
-                     Thread.Sleep(500);
+                     Thread.Sleep(config.Speed);
+                     
+                     if (snake.Posx == -1) snake.GetBlock(0).Posx = config.NumOfPositionsX ;
+                      if (snake.Posy == -1) snake.GetBlock(0).Posy = config.NumOfPositionsY - 1;
+                      if (snake.Posx == config.NumOfPositionsX) snake.GetBlock(0).Posx = -1;
+                      if (snake.Posy == config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
                      Snake.Move(Direction);
                      eat = IsFoodEaten();
 
                  })
                  ;
-                if(eat)
+                if (eat)
                 {
                     GenerateFood();
                     snake.Eat();

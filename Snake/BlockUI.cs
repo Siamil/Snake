@@ -34,15 +34,13 @@ namespace Snake
         public Rectangle Rect { get => rect; set => rect = value; }
 
         public void Draw(Canvas canvas)
-        {
-            
-            Rect.Width = canvas.Width/10;
-            Rect.Height = canvas.Height/10;
+        {  
+            Rect.Width = canvas.ActualWidth * 0.1;
+            Rect.Height = canvas.ActualHeight * 0.1;
             Rect.Fill = Brushes.Goldenrod;
-            Rect.Stroke = Brushes.Black;
-            
-            Canvas.SetLeft(Rect, (double) ((block.Posx * 0.1)) * canvas.Width);
-            Canvas.SetTop(Rect, (block.Posy * 0.1) * canvas.Height);
+            Rect.Stroke = Brushes.Black;    
+            Canvas.SetLeft(Rect, ((block.Posx * 0.1)) * canvas.ActualWidth);
+            Canvas.SetTop(Rect, (block.Posy * 0.1) * canvas.ActualHeight);
         }
         public void Publisher() { }
     }

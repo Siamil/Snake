@@ -45,6 +45,8 @@ namespace Snake
         {
             NumOfBlocks += 1;
             Block block = new Block();
+            block.Posx = blocks.Last().Posx;
+            block.Posy = blocks.Last().Posy;
             blocks.Add(block);
             EventArgs e = new EventArgs();
             OnBlockAdded(e);
