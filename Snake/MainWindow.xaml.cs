@@ -25,6 +25,7 @@ namespace Snake
             InitializeComponent();
             canvas.Height = this.Height;
             canvas.Width = this.Width * 0.7;
+            CanvasBorder.BorderThickness = new Thickness(1);
             game = new Game();
             foodUI = new FoodUI(game.Food, canvas);
             game.SnakeMoved += Draw;
@@ -36,7 +37,7 @@ namespace Snake
         public void Draw(object sender, EventArgs e)
         {
             canvas.Height = this.ActualHeight;
-            canvas.Width = this.ActualWidth;
+            canvas.Width = this.ActualWidth * 0.7;
             foodUI.Draw(canvas);
             snakeUI.Draw(canvas);
         }

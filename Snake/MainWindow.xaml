@@ -6,5 +6,9 @@
         xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" KeyDown="OnKeyDown">
-    <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" KeyDown="OnKeyDown"/>
+    <Border x:Name="CanvasBorder" BorderBrush="Black">
+        <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" KeyDown="OnKeyDown" HorizontalAlignment="Left"/>
+    </Border>
+    
+    
 </Window>
