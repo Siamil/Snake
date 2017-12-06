@@ -20,13 +20,13 @@ namespace Snake
         private int numOfBlocks;
         List<Block> blocks = new List<Block>();
 
-        public Snakee()
+        public Snakee(int num)
         {
             numOfBlocks = 7;
             for (int i = 0; i < numOfBlocks; i++)
             {
                 Block block = new Block();
-                block.Posx = i+1;
+                block.Posx = i+num*2;
                 block.Posy = 4;
                 blocks.Add(block);
             }

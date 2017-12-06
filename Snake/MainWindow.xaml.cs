@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using System.Net;
+using System.Net.Sockets;
 namespace Snake
 {
     /// <summary>
@@ -18,6 +19,8 @@ namespace Snake
         Game game;
         SnakeUI snakeUI;
         FoodUI foodUI;
+        SnakeUI multiSnakeUI;
+        
         
 
         public MainWindow()
@@ -32,6 +35,7 @@ namespace Snake
             game.FoodGenerated += Draw;
             game.GameEnded += GameEnded;
             snakeUI = new SnakeUI(canvas, game.Snake);
+            multiSnakeUI = new SnakeUI(canvas, game.MultiSnake);
         }
         
         public void Draw(object sender, EventArgs e)
@@ -40,6 +44,7 @@ namespace Snake
             canvas.Width = this.ActualWidth * 0.7;
             foodUI.Draw(canvas);
             snakeUI.Draw(canvas);
+            multiSnakeUI.Draw(canvas);
         }
 
         public void GameEnded(object sender, EventArgs e)
@@ -51,5 +56,12 @@ namespace Snake
             game.OnKeyDownHandler(e);
            // MessageBox.Show("xd");
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+       
     }
 }

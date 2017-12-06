@@ -14,9 +14,11 @@ namespace Snake
         
         private int points;
         Snakee snake;
+        Snakee multiSnake;
         Food food;
         bool gameover = false;
         Direction direction = Direction.DOWN;
+        Direction multiDirection = Direction.UP;
         //Timer timer = new Timer();
         public event EventHandler SnakeMoved;
         protected virtual void OnSnakeMoved(EventArgs e)
@@ -38,9 +40,11 @@ namespace Snake
 
         public Game()
         {
-            snake = new Snakee();
+            snake = new Snakee(1);
             food = new Food();
             random = new Random();
+            MultiSnake = new Snakee(2);
+            
             
 
             MoveSnake();
@@ -112,6 +116,8 @@ namespace Snake
         internal Snakee Snake { get => snake; set => snake = value; }
         internal Direction Direction { get => direction; set => direction = value; }
         internal Food Food { get => food; set => food = value; }
+        internal Snakee MultiSnake { get => multiSnake; set => multiSnake = value; }
+        internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
 
         //public async Task<Direction> GetDirection(KeyEventArgs e)
         //{
@@ -135,11 +141,12 @@ namespace Snake
                 await Task.Run(() =>
                  {
                      Thread.Sleep(Config.Speed);
-                      if (snake.Posx == -1) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                      if (snake.Posx == -1 && Direction ==  Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
                       if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                       if (snake.Posx == Config.NumOfPositionsX - 1 && Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
                       if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1; 
                      Snake.Move(Direction);
+                     MultiSnake.Move(MultiDirection);
                      gameover = GameOver();
                      eat = IsFoodEaten();
                  })
