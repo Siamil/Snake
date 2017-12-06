@@ -85,16 +85,20 @@ namespace Snake
             switch (e.Key)
             {
                 case Key.W:
+                    if (Direction == Direction.DOWN) break;
                     Direction = Direction.UP;
                     break;
 
                 case Key.S:
+                    if (Direction == Direction.UP) break;
                     Direction = Direction.DOWN;
                     break;
                 case Key.A:
+                    if (Direction == Direction.RIGHT) break;
                     Direction = Direction.LEFT;
                     break;
                 case Key.D:
+                    if (Direction == Direction.LEFT) break;
                     Direction = Direction.RIGHT;
                     break;
 
@@ -126,13 +130,14 @@ namespace Snake
             
             while (!gameover)
             {
-                
+                EventArgs e = new EventArgs();
+                OnSnakeMoved(e);
                 await Task.Run(() =>
                  {
                      Thread.Sleep(Config.Speed);
-                     if (snake.Posx == -1) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX ;
+                      if (snake.Posx == -1) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
                       if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
-                      if (snake.Posx == Config.NumOfPositionsX) snake.GetBlock(0).Posx = -1;
+                      if (snake.Posx == Config.NumOfPositionsX - 1 && Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
                       if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1; 
                      Snake.Move(Direction);
                      gameover = GameOver();
@@ -149,8 +154,7 @@ namespace Snake
                     EventArgs d = new EventArgs();
                     OnGameEnded(d);
                 }
-                EventArgs e = new EventArgs();
-                OnSnakeMoved(e);
+                
             }
         }
     }
