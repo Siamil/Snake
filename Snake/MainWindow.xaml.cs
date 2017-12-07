@@ -57,11 +57,18 @@ namespace Snake
            // MessageBox.Show("xd");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void bServer_Click(object sender, RoutedEventArgs e)
         {
+             
+                Server server = new Server(ref game);
+            server.waitConnection();
 
         }
 
-       
+        private void bConnect_Click(object sender, RoutedEventArgs e)
+        {
+            Client client = new Client(ref game);
+           // client.receiveBytes();
+        }
     }
 }

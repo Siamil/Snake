@@ -7,36 +7,56 @@ using System.Net;
 using System.Net.Sockets;
 using System.Web;
 using Newtonsoft.Json;
+using System.Threading;
+
 namespace Snake
 {
     class Client
     {
         Socket sender;
-        
-        public Client()
+        Game game;
+
+        public Client(ref Game game)
         {
             sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint endpoint = new IPEndPoint(0, 80);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 80);
             sender.Connect(endpoint);
+            this.game = game;
 
         }
         public void sendMessage(Game game)
         {
             string json = JsonConvert.SerializeObject(game.MultiDirection, Formatting.Indented);
-            
+
             byte[] data = Encoding.Default.GetBytes(json);
 
             sender.Send(data);
         }
-        public Direction  receiveBytes()
+        public async void receiveBytes()
         {
-            byte[] data = new byte[255];
-            
-            int bytes = sender.Receive(data, 0, data.Length, 0);
-            Array.Resize(ref data, bytes);
-            string json = data.ToString();
-            Direction direction = JsonConvert.DeserializeObject<Direction>(json);
-            return direction;
+            while (true)
+            {
+                await Task.Run(() =>
+            {
+
+                Thread.Sleep(100);
+               // try
+               // {
+                    byte[] data = new byte[255];
+                    int bytes = sender.Receive(data, 0, data.Length, 0);
+                    Array.Resize(ref data, bytes);
+                    string json = data.ToString();
+                    Direction direction = JsonConvert.DeserializeObject<Direction>(json);
+                    game.Direction = direction;
+
+              //  }
+                //catch
+               // { }
+
+
+            });
+            }
+
         }
     }
 }

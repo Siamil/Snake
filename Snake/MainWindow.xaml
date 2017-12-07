@@ -8,8 +8,8 @@
         Title="MainWindow" Height="488.123" Width="684.328" KeyDown="OnKeyDown">
     <Border x:Name="CanvasBorder" BorderBrush="Black">
         <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" KeyDown="OnKeyDown" HorizontalAlignment="Left" Background="#FF6C80EB">
-            <Button x:Name="bConnect" Content="Button" Canvas.Left="392" Canvas.Top="58" Width="75" Click="Button_Click"/>
-            <Button x:Name="bServer" Content="Button" Canvas.Left="312" Canvas.Top="58" Width="75"/>
+            <Button x:Name="bConnect" Content="client" Canvas.Left="392" Canvas.Top="58" Width="75" Click="bConnect_Click" />
+            <Button x:Name="bServer" Content="server" Canvas.Left="312" Canvas.Top="58" Width="75" Click="bServer_Click"/>
         </Canvas>
     </Border>
 
