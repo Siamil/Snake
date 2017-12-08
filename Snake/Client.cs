@@ -15,6 +15,7 @@ namespace Snake
     {
         Socket sender;
         Game game;
+        Direction direction;
 
         public Client(ref Game game)
         {
@@ -39,22 +40,23 @@ namespace Snake
                 await Task.Run(() =>
             {
 
-                Thread.Sleep(100);
-               // try
-               // {
+                Thread.Sleep(300);
+                try
+                {
                     byte[] data = new byte[255];
                     int bytes = sender.Receive(data, 0, data.Length, 0);
                     Array.Resize(ref data, bytes);
-                    string json = data.ToString();
-                    Direction direction = JsonConvert.DeserializeObject<Direction>(json);
-                    game.Direction = direction;
+                    string json = Encoding.UTF8.GetString(data);
+                    direction = JsonConvert.DeserializeObject<Direction>(json);
+                    
+                }
 
-              //  }
-                //catch
-               // { }
+                catch
+                { }
 
 
             });
+                game.Direction = direction;
             }
 
         }

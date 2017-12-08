@@ -68,7 +68,7 @@ namespace Snake
         private void bConnect_Click(object sender, RoutedEventArgs e)
         {
             Client client = new Client(ref game);
-           // client.receiveBytes();
+            client.receiveBytes();
         }
     }
 }
