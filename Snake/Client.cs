@@ -23,15 +23,35 @@ namespace Snake
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 80);
             sender.Connect(endpoint);
             this.game = game;
+            sendBytes();
 
         }
-        public void sendMessage(Game game)
+        public async void sendBytes()
         {
-            string json = JsonConvert.SerializeObject(game.MultiDirection, Formatting.Indented);
+            while (true)
+            {
+                await Task.Run(() =>
+                {
 
-            byte[] data = Encoding.Default.GetBytes(json);
+                    Thread.Sleep(50);
+                    try
+                    {
+                        string json = JsonConvert.SerializeObject(game.MultiDirection, Formatting.Indented);
 
-            sender.Send(data);
+                        byte[] data = Encoding.Default.GetBytes(json);
+
+                        sender.Send(data);
+                    }
+                    catch (SocketException e)
+                    {
+                        Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
+
+                    }
+
+
+                });
+            }
+
         }
         public async void receiveBytes()
         {
@@ -40,7 +60,7 @@ namespace Snake
                 await Task.Run(() =>
             {
 
-                Thread.Sleep(300);
+                Thread.Sleep(50);
                 try
                 {
                     byte[] data = new byte[255];
@@ -48,7 +68,7 @@ namespace Snake
                     Array.Resize(ref data, bytes);
                     string json = Encoding.UTF8.GetString(data);
                     direction = JsonConvert.DeserializeObject<Direction>(json);
-                    
+                    game.Direction = direction;
                 }
 
                 catch
@@ -56,7 +76,7 @@ namespace Snake
 
 
             });
-                game.Direction = direction;
+                
             }
 
         }

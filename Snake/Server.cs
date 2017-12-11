@@ -15,6 +15,7 @@ namespace Snake
         Socket sender;
         Socket client;
         Game game;
+        Direction direction;
 
         public Server(ref Game game)
         {
@@ -39,6 +40,7 @@ namespace Snake
                     if (client != null)
                     {
                         sendBytes();
+                        receiveBytes();
                         break;
                     }
                 }
@@ -46,20 +48,20 @@ namespace Snake
 
 
         }
-        public void sendBytes()
+        public async void sendBytes()
         {
             while (true)
             {
-                Task.Run(() =>
+               await Task.Run(() =>
             {
 
-                Thread.Sleep(200);
+                Thread.Sleep(50);
                 try
                 {
                     string json = JsonConvert.SerializeObject(game.Direction, Formatting.Indented);
 
                     byte[] data = Encoding.Default.GetBytes(json);
-
+                    
                     client.Send(data);
                 }
                 catch (SocketException e)
@@ -73,15 +75,32 @@ namespace Snake
         }
             
         }
-        public Direction receiveBytes()
+        public async void receiveBytes()
         {
-            byte[] data = new byte[255];
+            while (true)
+            {
+                await Task.Run(() =>
+                {
 
-            int bytes = client.Receive(data, 0, data.Length, 0);
-            Array.Resize(ref data, bytes);
-            string json = data.ToString();
-            Direction direction = JsonConvert.DeserializeObject<Direction>(json);
-            return direction;
+                    Thread.Sleep(50);
+                    try
+                    {
+                        byte[] data = new byte[255];
+                        int bytes = client.Receive(data, 0, data.Length, 0);
+                        Array.Resize(ref data, bytes);
+                        string json = Encoding.UTF8.GetString(data);
+                        direction = JsonConvert.DeserializeObject<Direction>(json);
+                        game.MultiDirection = direction;
+                    }
+
+                    catch
+                    { }
+
+
+                });
+
+            }
+
         }
     }
 }

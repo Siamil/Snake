@@ -11,14 +11,14 @@ namespace Snake
     class Game
     {
         Random random;
-        
+        bool isServer;
         private int points;
         Snakee snake;
         Snakee multiSnake;
         Food food;
         bool gameover = false;
         Direction direction = Direction.DOWN;
-        Direction multiDirection = Direction.UP;
+        Direction multiDirection = Direction.LEFT;
         //Timer timer = new Timer();
         public event EventHandler SnakeMoved;
         protected virtual void OnSnakeMoved(EventArgs e)
@@ -59,7 +59,7 @@ namespace Snake
         {
             for (int i = 2; i < snake.NumOfBlocks; i++)
             {
-                if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy) return true;
+                if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy && isServer) return true;
             }
             return false;
         }
@@ -86,25 +86,58 @@ namespace Snake
         }
         public void OnKeyDownHandler(KeyEventArgs e)
         {
-            switch (e.Key)
+            switch (isServer)
             {
-                case Key.W:
-                    if (Direction == Direction.DOWN) break;
-                    Direction = Direction.UP;
-                    break;
+                case true:
+                    {
+                        switch (e.Key)
+                        {
+                            case Key.W:
+                                if (Direction == Direction.DOWN) break;
+                                Direction = Direction.UP;
+                                break;
 
-                case Key.S:
-                    if (Direction == Direction.UP) break;
-                    Direction = Direction.DOWN;
-                    break;
-                case Key.A:
-                    if (Direction == Direction.RIGHT) break;
-                    Direction = Direction.LEFT;
-                    break;
-                case Key.D:
-                    if (Direction == Direction.LEFT) break;
-                    Direction = Direction.RIGHT;
-                    break;
+                            case Key.S:
+                                if (Direction == Direction.UP) break;
+                                Direction = Direction.DOWN;
+                                break;
+                            case Key.A:
+                                if (Direction == Direction.RIGHT) break;
+                                Direction = Direction.LEFT;
+                                break;
+                            case Key.D:
+                                if (Direction == Direction.LEFT) break;
+                                Direction = Direction.RIGHT;
+                                break;
+                        }
+                        break;
+                    }
+                case false:
+                    {
+                        switch (e.Key)
+                        {
+                            case Key.W:
+                                if (MultiDirection == Direction.DOWN) break;
+                                MultiDirection = Direction.UP;
+                                break;
+
+                            case Key.S:
+                                if (MultiDirection == Direction.UP) break;
+                                MultiDirection = Direction.DOWN;
+                                break;
+                            case Key.A:
+                                if (MultiDirection == Direction.RIGHT) break;
+                                MultiDirection = Direction.LEFT;
+                                break;
+                            case Key.D:
+                                if (MultiDirection == Direction.LEFT) break;
+                                MultiDirection = Direction.RIGHT;
+                                break;
+                        }
+                        break;
+                    }
+
+
 
                 default:
                     break;
@@ -118,18 +151,8 @@ namespace Snake
         internal Food Food { get => food; set => food = value; }
         internal Snakee MultiSnake { get => multiSnake; set => multiSnake = value; }
         internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
+        public bool IsServer { get => isServer; set => isServer = value; }
 
-        //public async Task<Direction> GetDirection(KeyEventArgs e)
-        //{
-        //    Direction direction;
-        //    await Task.Run(() =>
-        //    {
-        //        OnKeyDownHandler(e);
-
-
-        //    });
-
-        //}
         public async void MoveSnake()
         {
             bool eat = false;
@@ -144,7 +167,11 @@ namespace Snake
                       if (snake.Posx == -1 && Direction ==  Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
                       if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                       if (snake.Posx == Config.NumOfPositionsX - 1 && Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
-                      if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1; 
+                      if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
+                     if (multiSnake.Posx == -1 && multiDirection == Direction.LEFT) multiSnake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                     if (multiSnake.Posy == -1) multiSnake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
+                     if (multiSnake.Posx == Config.NumOfPositionsX - 1 && multiDirection == Direction.RIGHT) multiSnake.GetBlock(0).Posx = -1;
+                     if (multiSnake.Posy == Config.NumOfPositionsY) multiSnake.GetBlock(0).Posy = -1;
                      Snake.Move(Direction);
                      MultiSnake.Move(MultiDirection);
                      gameover = GameOver();

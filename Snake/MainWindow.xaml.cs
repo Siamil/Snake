@@ -59,15 +59,19 @@ namespace Snake
 
         private void bServer_Click(object sender, RoutedEventArgs e)
         {
-             
-                Server server = new Server(ref game);
+            game.IsServer = true;
+            Server server = new Server(ref game);
             server.waitConnection();
+            
+            
 
         }
 
         private void bConnect_Click(object sender, RoutedEventArgs e)
         {
+            game.IsServer = false;
             Client client = new Client(ref game);
+
             client.receiveBytes();
         }
     }
