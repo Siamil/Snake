@@ -19,6 +19,7 @@ namespace Snake
         private int posy;
         private int numOfBlocks;
         List<Block> blocks = new List<Block>();
+        Direction direction;
 
         public Snakee(int num)
         {
@@ -36,6 +37,8 @@ namespace Snake
         public int Posy { get => posy; set => posy = value; }
         public int NumOfBlocks { get => numOfBlocks; set => numOfBlocks = value; }
         public int Posx { get => posx; set => posx = value; }
+        internal Direction Direction { get => direction; set => direction = value; }
+
         public Block GetBlock(int index)
         {
             return blocks[index];
@@ -51,10 +54,10 @@ namespace Snake
             EventArgs e = new EventArgs();
             OnBlockAdded(e);
         }
-        public void Move(Direction direction)
+        public void Move()
         {
             
-            switch (direction)
+            switch (Direction)
             {
                 case Direction.UP:
                     blocks[0].Posy -= 1;

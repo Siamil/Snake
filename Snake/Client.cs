@@ -36,7 +36,7 @@ namespace Snake
                     Thread.Sleep(50);
                     try
                     {
-                        string json = JsonConvert.SerializeObject(game.MultiDirection, Formatting.Indented);
+                        string json = JsonConvert.SerializeObject(game.MultiSnake.Direction, Formatting.Indented);
 
                         byte[] data = Encoding.Default.GetBytes(json);
 
@@ -68,7 +68,7 @@ namespace Snake
                     Array.Resize(ref data, bytes);
                     string json = Encoding.UTF8.GetString(data);
                     direction = JsonConvert.DeserializeObject<Direction>(json);
-                    game.Direction = direction;
+                    game.Snake.Direction = direction;
                 }
 
                 catch

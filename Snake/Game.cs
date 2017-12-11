@@ -14,16 +14,18 @@ namespace Snake
         bool isServer;
         private int points;
         Snakee snake;
+        List<Snakee> snakes;
         Snakee multiSnake;
         Food food;
+        bool multiEat;
         bool gameover = false;
-        Direction direction = Direction.DOWN;
-        Direction multiDirection = Direction.LEFT;
+        //Direction direction = Direction.DOWN;
+        //Direction multiDirection = Direction.LEFT;
         //Timer timer = new Timer();
         public event EventHandler SnakeMoved;
         protected virtual void OnSnakeMoved(EventArgs e)
         {
-            
+
             SnakeMoved?.Invoke(this, e);
         }
         public event EventHandler GameEnded;
@@ -44,18 +46,19 @@ namespace Snake
             food = new Food();
             random = new Random();
             MultiSnake = new Snakee(2);
-            
-            
+            snakes = new List<Snakee>();
+            snakes.Add(snake);
+            snakes.Add(multiSnake);
 
             MoveSnake();
-            GameOver();
+            GameOver(snake);
             GenerateFood();
             //timer.Interval = 300;
             //timer.Tick += MoveSnake;
             //timer.Start();
 
         }
-        public bool GameOver()
+        public bool GameOver(Snakee snake)
         {
             for (int i = 2; i < snake.NumOfBlocks; i++)
             {
@@ -63,7 +66,7 @@ namespace Snake
             }
             return false;
         }
-        public bool IsFoodEaten()
+        public bool IsFoodEaten(Snakee snake)
         {
             if (food.Posx == snake.Posx && food.Posy == snake.Posy)
             {
@@ -76,11 +79,6 @@ namespace Snake
 
             food.Posx = random.Next(0, (int)Config.NumOfPositionsX);
             food.Posy = random.Next(0, (int)Config.NumOfPositionsY);
-            for (int i = 0; i < snake.NumOfBlocks; i++)
-            {
-                if (Food.Posx == snake.GetBlock(i).Posx && Food.Posy == snake.GetBlock(i).Posy) GenerateFood();
-            }
-
             EventArgs e = new EventArgs();
             OnFoodGenerated(e);
         }
@@ -93,21 +91,21 @@ namespace Snake
                         switch (e.Key)
                         {
                             case Key.W:
-                                if (Direction == Direction.DOWN) break;
-                                Direction = Direction.UP;
+                                if (snake.Direction == Direction.DOWN) break;
+                                snake.Direction = Direction.UP;
                                 break;
 
                             case Key.S:
-                                if (Direction == Direction.UP) break;
-                                Direction = Direction.DOWN;
+                                if (snake.Direction == Direction.UP) break;
+                                snake.Direction = Direction.DOWN;
                                 break;
                             case Key.A:
-                                if (Direction == Direction.RIGHT) break;
-                                Direction = Direction.LEFT;
+                                if (snake.Direction == Direction.RIGHT) break;
+                                snake.Direction = Direction.LEFT;
                                 break;
                             case Key.D:
-                                if (Direction == Direction.LEFT) break;
-                                Direction = Direction.RIGHT;
+                                if (snake.Direction == Direction.LEFT) break;
+                                snake.Direction = Direction.RIGHT;
                                 break;
                         }
                         break;
@@ -117,21 +115,21 @@ namespace Snake
                         switch (e.Key)
                         {
                             case Key.W:
-                                if (MultiDirection == Direction.DOWN) break;
-                                MultiDirection = Direction.UP;
+                                if (MultiSnake.Direction == Direction.DOWN) break;
+                                MultiSnake.Direction = Direction.UP;
                                 break;
 
                             case Key.S:
-                                if (MultiDirection == Direction.UP) break;
-                                MultiDirection = Direction.DOWN;
+                                if (MultiSnake.Direction == Direction.UP) break;
+                                MultiSnake.Direction = Direction.DOWN;
                                 break;
                             case Key.A:
-                                if (MultiDirection == Direction.RIGHT) break;
-                                MultiDirection = Direction.LEFT;
+                                if (MultiSnake.Direction == Direction.RIGHT) break;
+                                MultiSnake.Direction = Direction.LEFT;
                                 break;
                             case Key.D:
-                                if (MultiDirection == Direction.LEFT) break;
-                                MultiDirection = Direction.RIGHT;
+                                if (MultiSnake.Direction == Direction.LEFT) break;
+                                MultiSnake.Direction = Direction.RIGHT;
                                 break;
                         }
                         break;
@@ -147,16 +145,16 @@ namespace Snake
         public int Points { get => points; set => points = value; }
 
         internal Snakee Snake { get => snake; set => snake = value; }
-        internal Direction Direction { get => direction; set => direction = value; }
+       // internal Direction Direction { get => direction; set => direction = value; }
         internal Food Food { get => food; set => food = value; }
         internal Snakee MultiSnake { get => multiSnake; set => multiSnake = value; }
-        internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
+       // internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
         public bool IsServer { get => isServer; set => isServer = value; }
 
         public async void MoveSnake()
         {
             bool eat = false;
-            
+
             while (!gameover)
             {
                 EventArgs e = new EventArgs();
@@ -164,31 +162,40 @@ namespace Snake
                 await Task.Run(() =>
                  {
                      Thread.Sleep(Config.Speed);
-                      if (snake.Posx == -1 && Direction ==  Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
-                      if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
-                      if (snake.Posx == Config.NumOfPositionsX - 1 && Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
-                      if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
-                     if (multiSnake.Posx == -1 && multiDirection == Direction.LEFT) multiSnake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
-                     if (multiSnake.Posy == -1) multiSnake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
-                     if (multiSnake.Posx == Config.NumOfPositionsX - 1 && multiDirection == Direction.RIGHT) multiSnake.GetBlock(0).Posx = -1;
-                     if (multiSnake.Posy == Config.NumOfPositionsY) multiSnake.GetBlock(0).Posy = -1;
-                     Snake.Move(Direction);
-                     MultiSnake.Move(MultiDirection);
-                     gameover = GameOver();
-                     eat = IsFoodEaten();
+                     foreach (var snake in snakes)
+                     {
+                         if (snake.Posx == -1 && snake.Direction == Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                         if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
+                         if (snake.Posx == Config.NumOfPositionsX - 1 && snake.Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
+                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
+                         
+                         gameover = GameOver(snake);
+                         
+                        
+                     }
+                     multiEat = IsFoodEaten(multiSnake);
+                     Snake.Move();
+                     MultiSnake.Move();
+                     eat = IsFoodEaten(snake);
+
                  })
                  ;
                 if (eat)
                 {
                     GenerateFood();
-                    snake.Eat();
+                        snake.Eat();
+                }
+                if (multiEat)
+                {
+                    GenerateFood();
+                    multiSnake.Eat();
                 }
                 if (gameover)
                 {
                     EventArgs d = new EventArgs();
                     OnGameEnded(d);
                 }
-                
+
             }
         }
     }
