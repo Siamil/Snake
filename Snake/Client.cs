@@ -16,6 +16,7 @@ namespace Snake
         Socket sender;
         Game game;
         Direction direction;
+        Food food;
 
         public Client(ref Game game)
         {
@@ -66,9 +67,20 @@ namespace Snake
                     byte[] data = new byte[255];
                     int bytes = sender.Receive(data, 0, data.Length, 0);
                     Array.Resize(ref data, bytes);
-                    string json = Encoding.UTF8.GetString(data);
-                    direction = JsonConvert.DeserializeObject<Direction>(json);
-                    game.Snake.Direction = direction;
+                    sbyte[] sdata = new sbyte[2];
+                    sdata[0] = (SByte)data[0];
+                    sdata[1] = (SByte)data[1];
+                    string [] strings = data.Select(byteValue => byteValue.ToString()).ToArray();
+                    strings[0] = sdata[0].ToString();
+                    strings[1] = sdata[1].ToString();
+                    //  string json = Encoding.UTF8.GetString(data);
+                    //  direction = JsonConvert.DeserializeObject<Direction>(strings[0]);
+                    //food.Posx = JsonConvert.DeserializeObject<int>(strings[1]);
+                    //  food.Posy = JsonConvert.DeserializeObject<int>(strings[2]);
+                    game.Snake.Posx = JsonConvert.DeserializeObject<int>(strings[0]);
+                    game.Snake.Posy = JsonConvert.DeserializeObject<int>(strings[1]);
+                    game.Food.Posx = JsonConvert.DeserializeObject<int>(strings[2]);
+                    game.Food.Posy = JsonConvert.DeserializeObject<int>(strings[3]);
                 }
 
                 catch

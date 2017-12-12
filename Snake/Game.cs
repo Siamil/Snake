@@ -76,11 +76,13 @@ namespace Snake
         }
         public void GenerateFood()
         {
-
-            food.Posx = random.Next(0, (int)Config.NumOfPositionsX);
-            food.Posy = random.Next(0, (int)Config.NumOfPositionsY);
-            EventArgs e = new EventArgs();
-            OnFoodGenerated(e);
+            if (isServer)
+            {
+                food.Posx = random.Next(0, (int)Config.NumOfPositionsX);
+                food.Posy = random.Next(0, (int)Config.NumOfPositionsY);
+                EventArgs e = new EventArgs();
+                OnFoodGenerated(e);
+            }
         }
         public void OnKeyDownHandler(KeyEventArgs e)
         {

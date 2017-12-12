@@ -24,9 +24,6 @@ namespace Snake
             sender.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 80));
             sender.Listen(10);
             this.game = game;
-
-
-
         }
         public void waitConnection()
         {
@@ -52,28 +49,35 @@ namespace Snake
         {
             while (true)
             {
-               await Task.Run(() =>
-            {
+                await Task.Run(() =>
+             {
 
-                Thread.Sleep(50);
-                try
-                {
-                    string json = JsonConvert.SerializeObject(game.Snake.Direction, Formatting.Indented);
+                 Thread.Sleep(50);
+                 try
+                 {
+                     string[] json = new string[4];
+                     json[0] = JsonConvert.SerializeObject(game.Snake.Posx, Formatting.Indented);
+                     json[1] = JsonConvert.SerializeObject(game.Snake.Posy, Formatting.Indented);
+                     json[2] = JsonConvert.SerializeObject(game.Food.Posx, Formatting.Indented);
+                     json[3] = JsonConvert.SerializeObject(game.Food.Posy, Formatting.Indented);
+                     byte[] data = new byte[json.Length];
+                     for (int i = 0; i < json.Length; i++)
+                     {
+                         data[i] = (Byte) (SByte.Parse(json[i]));
+                     }
+                     
+                     client.Send(data);
+                 }
+                 catch (SocketException e)
+                 {
+                     Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
 
-                    byte[] data = Encoding.Default.GetBytes(json);
-                    
-                    client.Send(data);
-                }
-                catch (SocketException e)
-                {
-                    Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
-                    
-                }
-            
-            
-        });
-        }
-            
+                 }
+
+
+             });
+            }
+
         }
         public async void receiveBytes()
         {
