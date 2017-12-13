@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Snake
 {
-    enum Direction { UP, DOWN, LEFT, RIGHT};
+    enum Direction { UP, DOWN, LEFT, RIGHT, NONE};
   
     class Snakee
     {
@@ -19,7 +19,7 @@ namespace Snake
         private int posy;
         private int numOfBlocks;
         List<Block> blocks = new List<Block>();
-        Direction direction;
+        Direction direction = Direction.NONE;
 
         public Snakee(int num)
         {
@@ -72,6 +72,8 @@ namespace Snake
                     break;
                 case Direction.RIGHT:
                     blocks[0].Posx += 1;
+                    break;
+                case Direction.NONE:
                     break;
                 default:
                     break;

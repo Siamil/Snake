@@ -15,8 +15,8 @@ namespace Snake
     {
         Socket sender;
         Game game;
-        Direction direction;
-        Food food;
+       // Direction direction;
+       // Food food;
 
         public Client(ref Game game)
         {
@@ -37,9 +37,16 @@ namespace Snake
                     Thread.Sleep(50);
                     try
                     {
-                        string json = JsonConvert.SerializeObject(game.MultiSnake.Direction, Formatting.Indented);
-
-                        byte[] data = Encoding.Default.GetBytes(json);
+                        string[] json = new string[2];
+                        json[0] = JsonConvert.SerializeObject(game.MultiSnake.GetBlock(0).Posx, Formatting.Indented);
+                        json[1] = JsonConvert.SerializeObject(game.MultiSnake.GetBlock(0).Posy, Formatting.Indented);
+                       // json[2] = JsonConvert.SerializeObject(game.Food.Posx, Formatting.Indented);
+                        //json[3] = JsonConvert.SerializeObject(game.Food.Posy, Formatting.Indented);
+                        byte[] data = new byte[json.Length];
+                        for (int i = 0; i < json.Length; i++)
+                        {
+                            data[i] = unchecked((byte)Convert.ToSByte(json[i]));
+                        }
 
                         sender.Send(data);
                     }
@@ -77,10 +84,11 @@ namespace Snake
                     //  direction = JsonConvert.DeserializeObject<Direction>(strings[0]);
                     //food.Posx = JsonConvert.DeserializeObject<int>(strings[1]);
                     //  food.Posy = JsonConvert.DeserializeObject<int>(strings[2]);
-                    game.Snake.Posx = JsonConvert.DeserializeObject<int>(strings[0]);
-                    game.Snake.Posy = JsonConvert.DeserializeObject<int>(strings[1]);
+                    
                     game.Food.Posx = JsonConvert.DeserializeObject<int>(strings[2]);
                     game.Food.Posy = JsonConvert.DeserializeObject<int>(strings[3]);
+                    game.Snake.GetBlock(0).Posx = JsonConvert.DeserializeObject<int>(strings[0]);
+                    game.Snake.GetBlock(0).Posy = JsonConvert.DeserializeObject<int>(strings[1]);
                 }
 
                 catch

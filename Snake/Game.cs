@@ -18,6 +18,7 @@ namespace Snake
         Snakee multiSnake;
         Food food;
         bool multiEat;
+        bool eat;
         bool gameover = false;
         //Direction direction = Direction.DOWN;
         //Direction multiDirection = Direction.LEFT;
@@ -60,15 +61,16 @@ namespace Snake
         }
         public bool GameOver(Snakee snake)
         {
-            for (int i = 2; i < snake.NumOfBlocks; i++)
+            for (int i = 3; i < snake.NumOfBlocks; i++)
             {
-                if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy && isServer) return true;
+               //// if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy && isServer)
+                //    return true;
             }
             return false;
         }
         public bool IsFoodEaten(Snakee snake)
         {
-            if (food.Posx == snake.Posx && food.Posy == snake.Posy)
+            if (food.Posx == snake.GetBlock(0).Posx && food.Posy == snake.GetBlock(0).Posy)
             {
                 return true;
             }
@@ -155,7 +157,8 @@ namespace Snake
 
         public async void MoveSnake()
         {
-            bool eat = false;
+            
+            
 
             while (!gameover)
             {
@@ -175,9 +178,11 @@ namespace Snake
                          
                         
                      }
-                     multiEat = IsFoodEaten(multiSnake);
+                     
+                     
                      Snake.Move();
                      MultiSnake.Move();
+                     multiEat = IsFoodEaten(multiSnake);
                      eat = IsFoodEaten(snake);
 
                  })
