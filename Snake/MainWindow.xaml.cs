@@ -34,6 +34,7 @@ namespace Snake
             game.SnakeMoved += Draw;
             game.FoodGenerated += Draw;
             game.GameEnded += GameEnded;
+            game.MultiGameEnded += MultiGameEnded;
             snakeUI = new SnakeUI(canvas, game.Snake);
             multiSnakeUI = new SnakeUI(canvas, game.MultiSnake);
         }
@@ -45,11 +46,16 @@ namespace Snake
             foodUI.Draw(canvas);
             snakeUI.Draw(canvas);
             multiSnakeUI.Draw(canvas);
+            lPoints.Content = game.Points.ToString();
         }
 
         public void GameEnded(object sender, EventArgs e)
         {
-            MessageBox.Show("Game Over");
+            MessageBox.Show("Client Snake Won");
+        }
+        public void MultiGameEnded(object sender, EventArgs e)
+        {
+            MessageBox.Show("Server Snake Won");
         }
         private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -71,8 +77,12 @@ namespace Snake
         {
             game.IsServer = false;
             Client client = new Client(ref game);
-
             client.receiveBytes();
+            client.sendBytes();
+            game.StartGame();
+           // client.receiveBytes();
+
+            
         }
     }
 }

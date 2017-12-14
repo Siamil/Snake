@@ -8,7 +8,7 @@ namespace Snake
 {
    static class Config
     {
-        const int speed = 50;
+        const int speed = 200;
         const double numOfPositionsX = 20;
         const double numOfPositionsY = 20;
         const int numOfBlocks = 4;

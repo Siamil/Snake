@@ -15,7 +15,7 @@ namespace Snake
         Socket sender;
         Socket client;
         Game game;
-        Direction direction;
+       
 
         public Server(ref Game game)
         {
@@ -25,10 +25,10 @@ namespace Snake
             sender.Listen(10);
             this.game = game;
         }
-        public void waitConnection()
+        public async void waitConnection()
         {
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 while (true)
                 {
@@ -38,10 +38,13 @@ namespace Snake
                     {
                         sendBytes();
                         receiveBytes();
+                        game.Snake.Direction = Direction.DOWN;
+                        
                         break;
                     }
                 }
             });
+            game.StartGame();
 
 
         }
@@ -52,14 +55,15 @@ namespace Snake
                 await Task.Run(() =>
              {
 
-                 Thread.Sleep(50);
+                 Thread.Sleep(Config.Speed / 2);
                  try
                  {
                      string[] json = new string[4];
-                     json[0] = JsonConvert.SerializeObject(game.Snake.GetBlock(0).Posx, Formatting.Indented);
-                     json[1] = JsonConvert.SerializeObject(game.Snake.GetBlock(0).Posy, Formatting.Indented);
                      json[2] = JsonConvert.SerializeObject(game.Food.Posx, Formatting.Indented);
                      json[3] = JsonConvert.SerializeObject(game.Food.Posy, Formatting.Indented);
+                     json[0] = JsonConvert.SerializeObject(game.Snake.GetBlock(0).Posx, Formatting.Indented);
+                     json[1] = JsonConvert.SerializeObject(game.Snake.GetBlock(0).Posy, Formatting.Indented);
+                     
                      byte[] data = new byte[json.Length];
                      for (int i = 0; i < json.Length; i++)
                      {
@@ -86,7 +90,7 @@ namespace Snake
                 await Task.Run(() =>
                 {
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(Config.Speed / 2);
                     try
                     {
                         byte[] data = new byte[255];

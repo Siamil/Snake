@@ -81,12 +81,15 @@ namespace Snake
             int index = blocks.Count;
             this.Posx = blocks[0].Posx;
             this.Posy = blocks[0].Posy;
-            while (index > 1)
-            { 
-                blocks[index - 1].Posy = blocks[index - 2].Posy;
-                blocks[index - 1].Posx = blocks[index - 2].Posx;
-                index--;
-            }
+            
+            
+                while (index > 1)
+                {
+                    blocks[index - 1].Posy = blocks[index - 2].Posy;
+                    blocks[index - 1].Posx = blocks[index - 2].Posx;
+                    index--;
+                }
+            
         }
     }
     

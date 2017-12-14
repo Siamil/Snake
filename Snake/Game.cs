@@ -20,6 +20,7 @@ namespace Snake
         bool multiEat;
         bool eat;
         bool gameover = false;
+        bool Multigameover = false;
         //Direction direction = Direction.DOWN;
         //Direction multiDirection = Direction.LEFT;
         //Timer timer = new Timer();
@@ -34,6 +35,12 @@ namespace Snake
         {
 
             GameEnded?.Invoke(this, e);
+        }
+        public event EventHandler MultiGameEnded;
+        protected virtual void OnMultiGameEnded(EventArgs e)
+        {
+
+            MultiGameEnded?.Invoke(this, e);
         }
         public event EventHandler FoodGenerated;
         protected virtual void OnFoodGenerated(EventArgs e)
@@ -51,27 +58,36 @@ namespace Snake
             snakes.Add(snake);
             snakes.Add(multiSnake);
 
-            MoveSnake();
-            GameOver(snake);
-            GenerateFood();
-            //timer.Interval = 300;
-            //timer.Tick += MoveSnake;
-            //timer.Start();
+           // MoveSnake();
+            //GameOver(snake);
+           // GenerateFood();
 
         }
-        public bool GameOver(Snakee snake)
+        public bool GameOver(Snakee snake, Snakee snakeM)
         {
             for (int i = 3; i < snake.NumOfBlocks; i++)
             {
-               //// if (snake.GetBlock(0).Posx == snake.GetBlock(i).Posx && snake.GetBlock(0).Posy == snake.GetBlock(i).Posy && isServer)
-                //    return true;
+                Block tempBlock = snake.GetBlock(0);
+                if (tempBlock.Posx == snake.GetBlock(i).Posx && tempBlock.Posy == snake.GetBlock(i).Posy)
+                   // tempBlock.Posx == snakeM.GetBlock(i).Posx && tempBlock.Posy == snakeM.GetBlock(i).Posy)
+                {
+                    return true;
+                }
             }
             return false;
+        }
+        public void StartGame()
+        {
+            MoveSnake();
+           //GameOver(snake, multiSnake);
+           //GameOver(multiSnake, Snake);
+            GenerateFood();
         }
         public bool IsFoodEaten(Snakee snake)
         {
             if (food.Posx == snake.GetBlock(0).Posx && food.Posy == snake.GetBlock(0).Posy)
             {
+                Points += 100;
                 return true;
             }
             else return false;
@@ -81,7 +97,7 @@ namespace Snake
             if (isServer)
             {
                 food.Posx = random.Next(0, (int)Config.NumOfPositionsX);
-                food.Posy = random.Next(0, (int)Config.NumOfPositionsY);
+                food.Posy = random.Next(0, (int)Config.NumOfPositionsY - 1);
                 EventArgs e = new EventArgs();
                 OnFoodGenerated(e);
             }
@@ -154,13 +170,15 @@ namespace Snake
         internal Snakee MultiSnake { get => multiSnake; set => multiSnake = value; }
        // internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
         public bool IsServer { get => isServer; set => isServer = value; }
+        public bool MultiEat { get => multiEat; set => multiEat = value; }
+        public bool Eat { get => eat; set => eat = value; }
 
         public async void MoveSnake()
         {
             
             
 
-            while (!gameover)
+            while (!gameover && !Multigameover)
             {
                 EventArgs e = new EventArgs();
                 OnSnakeMoved(e);
@@ -172,35 +190,40 @@ namespace Snake
                          if (snake.Posx == -1 && snake.Direction == Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
                          if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                          if (snake.Posx == Config.NumOfPositionsX - 1 && snake.Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
-                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
-                         
-                         gameover = GameOver(snake);
-                         
-                        
+                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;   
                      }
                      
-                     
-                     Snake.Move();
-                     MultiSnake.Move();
-                     multiEat = IsFoodEaten(multiSnake);
-                     eat = IsFoodEaten(snake);
 
                  })
                  ;
-                if (eat)
+                Snake.Move();
+                MultiSnake.Move();
+               // gameover = GameOver(snake, MultiSnake);
+               // Multigameover = GameOver(MultiSnake, snake);
+                
+                MultiEat = IsFoodEaten(multiSnake);
+                Eat = IsFoodEaten(snake);
+                if (Eat)
                 {
-                    GenerateFood();
+                    
                         snake.Eat();
-                }
-                if (multiEat)
-                {
                     GenerateFood();
+                }
+                if (MultiEat)
+                {
+                    
                     multiSnake.Eat();
+                    GenerateFood();
                 }
                 if (gameover)
                 {
                     EventArgs d = new EventArgs();
                     OnGameEnded(d);
+                }
+                if (Multigameover)
+                {
+                    EventArgs f = new EventArgs();
+                    OnMultiGameEnded(f);
                 }
 
             }
