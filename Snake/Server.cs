@@ -38,7 +38,7 @@ namespace Snake
                     {
                         sendBytes();
                         receiveBytes();
-                        game.Snake.Direction = Direction.DOWN;
+                        game.Snake.Direction = Direction.LEFT;
                         
                         break;
                     }

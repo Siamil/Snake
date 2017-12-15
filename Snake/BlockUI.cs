@@ -15,12 +15,14 @@ namespace Snake
     {
         Block block;
         Rectangle rect;
+        int multi;
         public BlockUI() {
             Publisher();
         }
-        public BlockUI(Block block)
+        public BlockUI(Block block, int multi)
         {
             this.block = block;
+            this.multi = multi;
              Rect = new Rectangle();
             
 
@@ -37,7 +39,8 @@ namespace Snake
         {  
             Rect.Width = canvas.ActualWidth / Config.NumOfPositionsX;
             Rect.Height = canvas.ActualHeight / Config.NumOfPositionsX;
-            Rect.Fill = Brushes.Goldenrod;
+            if(multi == 1) Rect.Fill = Brushes.Goldenrod;
+            else Rect.Fill = Brushes.IndianRed;
             Rect.Stroke = Brushes.Black;    
             Canvas.SetLeft(Rect, ((block.Posx / Config.NumOfPositionsX)) * canvas.ActualWidth);
             Canvas.SetTop(Rect, (block.Posy / Config.NumOfPositionsX) * canvas.ActualHeight);

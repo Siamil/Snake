@@ -19,8 +19,8 @@ namespace Snake
         Food food;
         bool multiEat;
         bool eat;
-        bool gameover = false;
-        bool Multigameover = false;
+       // bool gameover = false;
+      //  bool Multigameover = false;
         //Direction direction = Direction.DOWN;
         //Direction multiDirection = Direction.LEFT;
         //Timer timer = new Timer();
@@ -65,14 +65,22 @@ namespace Snake
         }
         public bool GameOver(Snakee snake, Snakee snakeM)
         {
-            for (int i = 3; i < snake.NumOfBlocks; i++)
+            for (int i = 4; i < snake.NumOfBlocks - 1; i++)
             {
                 Block tempBlock = snake.GetBlock(0);
                 if (tempBlock.Posx == snake.GetBlock(i).Posx && tempBlock.Posy == snake.GetBlock(i).Posy)
-                   // tempBlock.Posx == snakeM.GetBlock(i).Posx && tempBlock.Posy == snakeM.GetBlock(i).Posy)
+                   
                 {
                     return true;
                 }
+            }
+
+            for (int i = 0; i < snakeM.NumOfBlocks - 1; i++)
+            {
+                Block tempBlock = snake.GetBlock(0);
+                if (tempBlock.Posx == snakeM.GetBlock(i).Posx && tempBlock.Posy == snakeM.GetBlock(i).Posy)
+                    return true;
+                
             }
             return false;
         }
@@ -178,19 +186,26 @@ namespace Snake
             
             
 
-            while (!gameover && !Multigameover)
+            while (true)
             {
                 EventArgs e = new EventArgs();
                 OnSnakeMoved(e);
                 await Task.Run(() =>
                  {
                      Thread.Sleep(Config.Speed);
-                     foreach (var snake in snakes)
+                     if (IsServer)
                      {
                          if (snake.Posx == -1 && snake.Direction == Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
                          if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                          if (snake.Posx == Config.NumOfPositionsX - 1 && snake.Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
-                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;   
+                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
+                     }
+                     else
+                     {
+                         if (MultiSnake.Posx == -1 && MultiSnake.Direction == Direction.LEFT) MultiSnake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                         if (MultiSnake.Posy == -1) MultiSnake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
+                         if (MultiSnake.Posx == Config.NumOfPositionsX - 1 && MultiSnake.Direction == Direction.RIGHT) MultiSnake.GetBlock(0).Posx = -1;
+                         if (MultiSnake.Posy == Config.NumOfPositionsY) MultiSnake.GetBlock(0).Posy = -1;
                      }
                      
 
@@ -198,32 +213,34 @@ namespace Snake
                  ;
                 Snake.Move();
                 MultiSnake.Move();
-               // gameover = GameOver(snake, MultiSnake);
-               // Multigameover = GameOver(MultiSnake, snake);
+             // gameover = GameOver(snake, MultiSnake);
+            //  Multigameover = GameOver(MultiSnake, snake);
                 
-                MultiEat = IsFoodEaten(multiSnake);
-                Eat = IsFoodEaten(snake);
-                if (Eat)
+               // MultiEat = IsFoodEaten(multiSnake);
+               // Eat = IsFoodEaten(snake);
+                if (IsFoodEaten(snake))
                 {
                     
                         snake.Eat();
                     GenerateFood();
                 }
-                if (MultiEat)
+                if (IsFoodEaten(multiSnake))
                 {
                     
                     multiSnake.Eat();
                     GenerateFood();
                 }
-                if (gameover)
+                if (GameOver(snake, MultiSnake))
                 {
                     EventArgs d = new EventArgs();
                     OnGameEnded(d);
+                    break;
                 }
-                if (Multigameover)
+                if (GameOver(MultiSnake, snake))
                 {
                     EventArgs f = new EventArgs();
                     OnMultiGameEnded(f);
+                    break;
                 }
 
             }

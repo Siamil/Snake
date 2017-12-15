@@ -17,18 +17,21 @@ namespace Snake
         }
         private int posx;
         private int posy;
+        private int multi;
         private int numOfBlocks;
         List<Block> blocks = new List<Block>();
         Direction direction = Direction.NONE;
 
+
         public Snakee(int num)
         {
             numOfBlocks = 7;
+            Multi = num;
             for (int i = 0; i < numOfBlocks; i++)
             {
                 Block block = new Block();
-                block.Posx = i+num*2;
-                block.Posy = 4;
+                block.Posx = i+num*3;
+                block.Posy = num*4;
                 blocks.Add(block);
             }
 
@@ -38,6 +41,7 @@ namespace Snake
         public int NumOfBlocks { get => numOfBlocks; set => numOfBlocks = value; }
         public int Posx { get => posx; set => posx = value; }
         internal Direction Direction { get => direction; set => direction = value; }
+        public int Multi { get => multi; set => multi = value; }
 
         public Block GetBlock(int index)
         {
