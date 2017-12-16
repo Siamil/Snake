@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
-        Title="MainWindow" Height="488.123" Width="684.328" KeyDown="OnKeyDown">
+        Title="MainWindow" Height="488.123" Width="684.328">
     <Border x:Name="CanvasBorder" BorderBrush="Black">
-        <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" KeyDown="OnKeyDown" HorizontalAlignment="Left" Background="#FF6C80EB">
-            <Button x:Name="bConnect" Content="client" Canvas.Left="392" Canvas.Top="58" Width="75" Click="bConnect_Click" />
-            <Button x:Name="bServer" Content="server" Canvas.Left="312" Canvas.Top="58" Width="75" Click="bServer_Click"/>
-            <Label x:Name="lPoints" Canvas.Left="312" Canvas.Top="27"/>
+        <Canvas x:Name="canvas" MinWidth="300" MinHeight="300" HorizontalAlignment="Left" Background="#FF6C80EB">
+            <Button x:Name="bConnect" Content="client" Canvas.Left="392" Canvas.Top="58" Width="75" Command="{Binding bConnect}" />
+            <Button x:Name="bServer" Content="server" Canvas.Left="312" Canvas.Top="58" Width="75" Command="{Binding bServer}"/>
+            <Label x:Name="lPoints" Canvas.Left="312" Canvas.Top="27" Content="{Binding lPoints, UpdateSourceTrigger=PropertyChanged}" />
         </Canvas>
     </Border>
 

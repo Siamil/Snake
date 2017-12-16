@@ -79,7 +79,7 @@ namespace Snake
             {
                 Block tempBlock = snake.GetBlock(0);
                 if (tempBlock.Posx == snakeM.GetBlock(i).Posx && tempBlock.Posy == snakeM.GetBlock(i).Posy)
-                    return true;
+                   return true;
                 
             }
             return false;
@@ -233,14 +233,14 @@ namespace Snake
                 if (GameOver(snake, MultiSnake))
                 {
                     EventArgs d = new EventArgs();
-                    OnGameEnded(d);
-                    break;
+                   // OnGameEnded(d);
+                    //break;
                 }
                 if (GameOver(MultiSnake, snake))
                 {
                     EventArgs f = new EventArgs();
-                    OnMultiGameEnded(f);
-                    break;
+                   // OnMultiGameEnded(f);
+                   // break;
                 }
 
             }
