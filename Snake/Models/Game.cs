@@ -19,8 +19,8 @@ namespace Snake
         Food food;
         bool multiEat;
         bool eat;
-       // bool gameover = false;
-      //  bool Multigameover = false;
+        // bool gameover = false;
+        //  bool Multigameover = false;
         //Direction direction = Direction.DOWN;
         //Direction multiDirection = Direction.LEFT;
         //Timer timer = new Timer();
@@ -58,9 +58,9 @@ namespace Snake
             snakes.Add(snake);
             snakes.Add(multiSnake);
 
-           // MoveSnake();
+            // MoveSnake();
             //GameOver(snake);
-           // GenerateFood();
+            // GenerateFood();
 
         }
         public bool GameOver(Snakee snake, Snakee snakeM)
@@ -69,7 +69,7 @@ namespace Snake
             {
                 Block tempBlock = snake.GetBlock(0);
                 if (tempBlock.Posx == snake.GetBlock(i).Posx && tempBlock.Posy == snake.GetBlock(i).Posy)
-                   
+
                 {
                     return true;
                 }
@@ -79,16 +79,16 @@ namespace Snake
             {
                 Block tempBlock = snake.GetBlock(0);
                 if (tempBlock.Posx == snakeM.GetBlock(i).Posx && tempBlock.Posy == snakeM.GetBlock(i).Posy)
-                   return true;
-                
+                    return true;
+
             }
             return false;
         }
         public void StartGame()
         {
             MoveSnake();
-           //GameOver(snake, multiSnake);
-           //GameOver(multiSnake, Snake);
+            //GameOver(snake, multiSnake);
+            //GameOver(multiSnake, Snake);
             GenerateFood();
         }
         public bool IsFoodEaten(Snakee snake)
@@ -173,18 +173,18 @@ namespace Snake
         public int Points { get => points; set => points = value; }
 
         internal Snakee Snake { get => snake; set => snake = value; }
-       // internal Direction Direction { get => direction; set => direction = value; }
+        // internal Direction Direction { get => direction; set => direction = value; }
         internal Food Food { get => food; set => food = value; }
         internal Snakee MultiSnake { get => multiSnake; set => multiSnake = value; }
-       // internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
+        // internal Direction MultiDirection { get => multiDirection; set => multiDirection = value; }
         public bool IsServer { get => isServer; set => isServer = value; }
         public bool MultiEat { get => multiEat; set => multiEat = value; }
         public bool Eat { get => eat; set => eat = value; }
 
         public async void MoveSnake()
         {
-            
-            
+
+
 
             while (true)
             {
@@ -195,52 +195,52 @@ namespace Snake
                      Thread.Sleep(Config.Speed);
                      if (IsServer)
                      {
-                         if (snake.Posx == -1 && snake.Direction == Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
-                         if (snake.Posy == -1) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
+                         if (snake.Posx == 0 && snake.Direction == Direction.LEFT) snake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                         if (snake.Posy == 0  && snake.Direction == Direction.UP) snake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                          if (snake.Posx == Config.NumOfPositionsX - 1 && snake.Direction == Direction.RIGHT) snake.GetBlock(0).Posx = -1;
-                         if (snake.Posy == Config.NumOfPositionsY) snake.GetBlock(0).Posy = -1;
+                         if (snake.Posy == Config.NumOfPositionsY - 1) snake.GetBlock(0).Posy = -1;
                      }
                      else
                      {
-                         if (MultiSnake.Posx == -1 && MultiSnake.Direction == Direction.LEFT) MultiSnake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
-                         if (MultiSnake.Posy == -1) MultiSnake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
+                         if (MultiSnake.Posx == 0 && MultiSnake.Direction == Direction.LEFT) MultiSnake.GetBlock(0).Posx = (int)Config.NumOfPositionsX;
+                         if (MultiSnake.Posy == 0 && MultiSnake.Direction == Direction.UP) MultiSnake.GetBlock(0).Posy = (int)Config.NumOfPositionsY - 1;
                          if (MultiSnake.Posx == Config.NumOfPositionsX - 1 && MultiSnake.Direction == Direction.RIGHT) MultiSnake.GetBlock(0).Posx = -1;
-                         if (MultiSnake.Posy == Config.NumOfPositionsY) MultiSnake.GetBlock(0).Posy = -1;
+                         if (MultiSnake.Posy == Config.NumOfPositionsY- 1) MultiSnake.GetBlock(0).Posy = -1;
                      }
-                     
+
 
                  })
                  ;
                 Snake.Move();
                 MultiSnake.Move();
-             // gameover = GameOver(snake, MultiSnake);
-            //  Multigameover = GameOver(MultiSnake, snake);
-                
-               // MultiEat = IsFoodEaten(multiSnake);
-               // Eat = IsFoodEaten(snake);
+                // gameover = GameOver(snake, MultiSnake);
+                //  Multigameover = GameOver(MultiSnake, snake);
+
+                // MultiEat = IsFoodEaten(multiSnake);
+                // Eat = IsFoodEaten(snake);
                 if (IsFoodEaten(snake))
                 {
-                    
-                        snake.Eat();
+
+                    snake.Eat();
                     GenerateFood();
                 }
                 if (IsFoodEaten(multiSnake))
                 {
-                    
+
                     multiSnake.Eat();
                     GenerateFood();
                 }
                 if (GameOver(snake, MultiSnake))
                 {
                     EventArgs d = new EventArgs();
-                   // OnGameEnded(d);
-                    //break;
+                     OnGameEnded(d);
+                    break;
                 }
                 if (GameOver(MultiSnake, snake))
                 {
                     EventArgs f = new EventArgs();
-                   // OnMultiGameEnded(f);
-                   // break;
+                     OnMultiGameEnded(f);
+                     break;
                 }
 
             }

@@ -22,13 +22,11 @@ namespace Snake
         SnakeUI multiSnakeUI;
         Canvas canvas;
         Label lPoints;
-        double actualHeight;
-        double actualWidth;
+        
 
-        public ModelView(Canvas canvas, double actualHeight, double actualWidth)
+        public ModelView(Canvas canvas)
         {
-            this.actualHeight = actualHeight;
-            this.actualWidth = actualWidth;
+            
             this.canvas = canvas;
             game = new Game();
             foodUI = new FoodUI(game.Food, canvas);
@@ -44,12 +42,11 @@ namespace Snake
         public ICommand bConnect { get { return new RelayCommand(bConnect_Click); } }
         public ICommand bServer { get { return new RelayCommand(bServer_Click); } }
 
-        
+        internal Game Game { get => game; set => game = value; }
 
         public void Draw(object sender, EventArgs e)
         {
-           canvas.Height = actualHeight;
-           canvas.Width = this.actualWidth * 0.7;
+           
             foodUI.Draw(canvas);
             snakeUI.Draw(canvas);
             multiSnakeUI.Draw(canvas);
@@ -64,12 +61,6 @@ namespace Snake
         {
             MessageBox.Show("Server Snake Won");
         }
-        private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            game.OnKeyDownHandler(e);
-            // MessageBox.Show("xd");
-        }
-
         private void bServer_Click()
         {
             game.IsServer = true;

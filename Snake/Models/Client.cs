@@ -88,15 +88,9 @@ namespace Snake
                     strings[1] = sdata[1].ToString();
                     game.Snake.GetBlock(0).Posx = JsonConvert.DeserializeObject<int>(strings[0]);
                     game.Snake.GetBlock(0).Posy = JsonConvert.DeserializeObject<int>(strings[1]);
-                    
-                   
-                }
-
-                
+                  }
                 catch
                 { }
-                
-
             });
                 if (game.IsFoodEaten(game.Snake)) game.Snake.Eat();
                 game.Food.Posx = JsonConvert.DeserializeObject<int>(strings[2]);
